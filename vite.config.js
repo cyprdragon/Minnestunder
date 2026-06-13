@@ -12,10 +12,29 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: false,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
   },
   build: {
     target: 'esnext',
     minify: 'terser',
     sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vue: ['vue', 'vue-router'],
+          pinia: ['pinia'],
+          lucide: ['lucide-vue-next'],
+        },
+      },
+    },
+  },
+  optimizeDeps: {
+    include: ['vue', 'vue-router', 'pinia', 'axios'],
   },
 })
